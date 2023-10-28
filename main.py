@@ -26,7 +26,7 @@ conn = psycopg2.connect(
     sslmode='require'
 )
 
-# a
+# a a a
 @app.route('/api/driver/id/<driver_id>')
 def get_circuit(driver_id):
     # Connettiti al database prendi le informazioni del pilota e mostrale in JSON
