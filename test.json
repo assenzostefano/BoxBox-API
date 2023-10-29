@@ -1,0 +1,25 @@
+{
+  "Type of session: FP1, FP2, FP3, Q, R": {
+    "Year": "2017",
+    "Date": "2017-03-24",
+    "Circuit Name": "Albert Park",
+    "Circuit ID": "albert_park",
+
+    "Latitude": "-37.8497",
+    "Longitude": "144.968",
+    "Locality": "Melbourne",
+    "Country": "Australia",
+
+    "Weather data": [
+      {"Time": "0 days 00:07:19.444000", "Air Temperature": "17.4", "Track Temperature": "22.8", "Humidity": "75.6", "Pressure": "939.2", "Wind Speed": "0.7", "Wind Direction": "256", "Rainfall": "False"},
+      {"Time": "0 days 00:08:19.452000", "Air Temperature": "17.5", "Track Temperature": "22.8", "Humidity": "75.0", "Pressure": "939.2", "Wind Speed": "0.7", "Wind Direction": "256", "Rainfall": "False"},
+      {"Time": "0 days 00:09:19.460000", "Air Temperature": "17.5", "Track Temperature": "22.8", "Humidity": "75.0", "Pressure": "939.2", "Wind Speed": "0.7", "Wind Direction": "256", "Rainfall": "False"},
+      {"Time": "0 days 00:10:19.468000", "Air Temperature": "17.5", "Track Temperature": "22.8", "Humidity": "75.0", "Pressure": "939.2", "Wind Speed": "0.7", "Wind Direction": "256", "Rainfall": "False"},
+      {"Time": "0 days 00:11:19.476000", "Air Temperature": "17.5", "Track Temperature": "22.8", "Humidity": "75.0", "Pressure": "939.2", "Wind Speed": "0.7", "Wind Direction": "256", "Rainfall": "False"}
+    ],
+
+    "Telemetry data": [
+      {}
+    ]
+  }
+}

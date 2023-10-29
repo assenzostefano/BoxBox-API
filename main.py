@@ -1,5 +1,3 @@
-import os
-
 import fastf1
 import psycopg2
 from dotenv import load_dotenv
@@ -11,22 +9,6 @@ app = Flask(__name__)
 
 load_dotenv()
 
-HOST_POSTGRESS = os.getenv('HOST_POSTGRESS')
-PORT_POSTGRESS = os.getenv('PORT_POSTGRESS')
-DB_POSTGRESS = os.getenv('DBNAME_POSTGRESS')
-USER_POSTGRESS = os.getenv('USER_POSTGRESS')
-PASSWORD_POSTGRESS = os.getenv('PASSWORD_POSTGRESS')
-
-conn = psycopg2.connect(
-    host=HOST_POSTGRESS,
-    port=PORT_POSTGRESS,
-    dbname=DB_POSTGRESS,
-    user=USER_POSTGRESS,
-    password=PASSWORD_POSTGRESS,
-    sslmode='require'
-)
-
-# a a a
 @app.route('/api/driver/id/<driver_id>')
 def get_circuit(driver_id):
     # Connettiti al database prendi le informazioni del pilota e mostrale in JSON

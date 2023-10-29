@@ -1,176 +1,80 @@
 import os
+import urllib
 from urllib.parse import urlsplit
 
-import psycopg2
+import pymongo
 import requests
 from dotenv import load_dotenv
 
+from scripts.constructor_info import constructor
+from scripts.session_data import race_data
+from src.utility.wikipedia_data import wikipedia_data
+
 load_dotenv()
 
-HOST_POSTGRESS = os.getenv('HOST_POSTGRESS')
-PORT_POSTGRESS = os.getenv('PORT_POSTGRESS')
-DB_POSTGRESS = os.getenv('DBNAME_POSTGRESS')
-USER_POSTGRESS = os.getenv('USER_POSTGRESS')
-PASSWORD_POSTGRESS = os.getenv('PASSWORD_POSTGRESS')
+USER_MONGO = os.getenv("USER_MONGO")
+PASS_MONGO = os.getenv("PASS_MONGO")
+HOST_MONGO = os.getenv("HOST_MONGO")
+
+# use urllib.parse.quote_plus
+connection_string = "mongodb+srv://stefano:" + urllib.parse.quote_plus(PASS_MONGO) + HOST_MONGO
 
 def get_driver_info():
     # Connessione al database
     count = 0
-    conn = psycopg2.connect(
-        host=HOST_POSTGRESS,
-        port=PORT_POSTGRESS,
-        database=DB_POSTGRESS,
-        user=USER_POSTGRESS,
-        password=PASSWORD_POSTGRESS,
-        sslmode='require'
-    )
-    cur = conn.cursor()
+    client = pymongo.MongoClient(connection_string)
+    db = client['F1']
+    collection = db['drivers']
 
-    # Prendi tutti i nomi dei piloti F1 di tutti i tempi
-    url = 'https://ergast.com/api/f1/drivers.json?limit=10000'
-    response = requests.get(url)
-    data = response.json()
-    drivers = data['MRData']['DriverTable']['Drivers']
+    # Ergast API Drivers base data
+    url = 'https://ergast.com/api/f1/drivers.json?limit=10000' # Take all drivers (limit=10000)
+    response = requests.get(url).json()
+    drivers = response['MRData']['DriverTable']['Drivers']
 
-    # Prendi tutte le informazioni dei piloti
     for driver in drivers:
         count += 1
-        print(count)
-        driver_id = driver['driverId']
+        # Take all drivers info from Ergast API
+        id = driver['driverId']
+        url = driver['url']
         given_name = driver['givenName']
         family_name = driver['familyName']
-        driver_complete_name = driver['givenName'] + ' ' + driver['familyName']
-        driver_nationality = driver['nationality']
-        driver_url = driver['url']
-        driver_date_of_birth = driver['dateOfBirth']
+        date_of_birth = driver['dateOfBirth']
+        nationality = driver['nationality']
 
-        # Prendi la biografia da driver_url (Wikipedia)
-        try:
-            base_url = "https://en.wikipedia.org/api/rest_v1/page/summary/"
-            parsed_link = urlsplit(driver_url)
-            path = parsed_link.path
-            filename = os.path.basename(path)
-            page_title = os.path.splitext(filename)[0]
-            url_wikipedia = base_url + page_title
-            response_wikipedia = requests.get(url_wikipedia)
-            data_wikipedia = response_wikipedia.json()
-            driver_biography = data_wikipedia['extract']
-        except:
-            driver_biography = ""
+        # Wikipedia API Biography Driver
+        wikipedia_driver = wikipedia_data(url_wikipedia=url)
 
-        # Prendi le informazioni da url_driver_info
-        url_driver_info = 'https://ergast.com/api/f1/drivers/' + driver_id + '/driverStandings.json'
-        response_driver_info = requests.get(url_driver_info)
-        data_driver_info = response_driver_info.json()
+        # Ergast API Drivers standings
+        url_standings = 'https://ergast.com/api/f1/drivers/' + id + '/driverStandings.json'
+        driver_info = requests.get(url_standings).json()
 
-        # Prendi tutte le informazioni da url_driver_info
-            
-        # Inserisci i dati nel database
-        cur.execute("""
-            INSERT INTO drivers (id, driver_id, given_name, family_name, complete_name, nationality, url, 
-            date_of_birth, biography)
-            VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, %s, %s)
-            ON CONFLICT (driver_id) DO UPDATE
-            SET given_name = excluded.given_name,
-                family_name = excluded.family_name,
-                complete_name = excluded.complete_name,
-                nationality = excluded.nationality,
-                url = excluded.url,
-                date_of_birth = excluded.date_of_birth,
-                biography = excluded.biography
-            RETURNING id;
-        """, (driver_id, given_name, family_name, driver_complete_name, driver_nationality, driver_url,
-              driver_date_of_birth, driver_biography))
-        
-        conn.commit()
-        new_id = cur.fetchone()[0]
-        # Stampa tutte le informazioni sulla console
-        print(new_id)
-    # Chiudi la connessione al database
-    cur.close()
-    conn.close()
+        driver_standings = []
+        for standings in driver_info['MRData']['StandingsTable']['StandingsLists']:
+            year = standings['season']
+            round = standings['round']
+            for standings in standings['DriverStandings']:
+                race_data(year=int(year), db=db)
+                for constructors in standings['Constructors']:
+                    constructor(constructors=constructors, db=db)
 
-def check_if_the_table_exist():
-    # Controlla se la tabella drivers esiste
-    conn = psycopg2.connect(
-        host=HOST_POSTGRESS,
-        port=PORT_POSTGRESS,
-        database=DB_POSTGRESS,
-        user=USER_POSTGRESS,
-        password=PASSWORD_POSTGRESS,
-        sslmode='require'
-    )
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT EXISTS (
-            SELECT 1
-            FROM information_schema.tables
-            WHERE table_schema = 'public'
-            AND table_name = 'drivers'
-        );
-    """)
-    result = cur.fetchone()
-    print(result[0])
-    # Se la tabella non esiste, creala
-    if result[0] == False:
-        cur.execute("""
-            CREATE TABLE drivers (
-                id SERIAL PRIMARY KEY,
-                driver_id VARCHAR(255) UNIQUE,
-                given_name VARCHAR(255),
-                family_name VARCHAR(255),
-                complete_name VARCHAR(255),
-                nationality VARCHAR(255),
-                url VARCHAR(255),
-                date_of_birth DATE,
-                biography TEXT
-            );
+        # Insert data into MongoDB
+        collection.insert_one({
+            "ID": id,
+            "Given Name": given_name,
+            "Family Name": family_name,
+            "Date of Birth": date_of_birth,
+            "Nationality": nationality,
+            "Driver Standings": driver_standings,
+            "URL Wikipedia": url,
+            wikipedia_driver['type']: wikipedia_driver,
+        })
 
-        """)
-        conn.commit()
-        print("Table 'drivers' created successfully.")
+        print('ID: ' + id)
+        print('Given Name: ' + given_name)
+        print('Family Name: ' + family_name)
+        print('Date of Birth: ' + date_of_birth)
+        print('Nationality: ' + nationality)
+        print('Biography Driver: ' + str(wikipedia_driver))
+        print('--------')
 
-    cur.close()
-    conn.close()
-    get_driver_info()
-
-def print_driver_ids():
-    conn = psycopg2.connect(
-        host=HOST_POSTGRESS,
-        port=PORT_POSTGRESS,
-        database=DB_POSTGRESS,
-        user=USER_POSTGRESS,
-        password=PASSWORD_POSTGRESS,
-        sslmode='require'
-    )
-    cur = conn.cursor()
-
-    # Esegui una query per ottenere tutti gli ID dei piloti
-    cur.execute("SELECT driver_id FROM drivers;")
-    rows = cur.fetchall()
-
-    # Stampa gli ID dei piloti
-    for row in rows:
-        print(row[0])
-
-    cur.close()
-    conn.close()
-
-def delete_table_drivers():
-    conn = psycopg2.connect(
-        host=HOST_POSTGRESS,
-        port=PORT_POSTGRESS,
-        database=DB_POSTGRESS,
-        user=USER_POSTGRESS,
-        password=PASSWORD_POSTGRESS,
-        sslmode='require'
-    )
-    cur = conn.cursor()
-    cur.execute("DROP TABLE drivers;")
-    conn.commit()
-    print("Table 'drivers' deleted successfully.")
-    cur.close()
-    conn.close()
-
-check_if_the_table_exist()
-#delete_table_drivers()
+get_driver_info()
