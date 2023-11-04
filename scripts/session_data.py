@@ -2,10 +2,10 @@ import logging
 import os
 
 import fastf1
-import pandas as pd
 import pytz
 import requests
 from dotenv import load_dotenv
+from fastf1.ergast import Ergast
 
 load_dotenv()
 
@@ -23,7 +23,7 @@ fastf1.Cache.enable_cache(cache_directory)  # optionally change cache location
 
 # Funzione per salvare i risultati delle gare per un dato anno
 def race_data(year, db):
-    # Take current year
+    api = Ergast()
     print(year)
     url = f"http://ergast.com/api/f1/{year}/results.json"
     get_number_session = f"http://ergast.com/api/f1/{year}.json"
@@ -42,47 +42,72 @@ def race_data(year, db):
         for i in range(1, max_race_number):
             for session in sessions:
                 try:
-                    session_data = fastf1.get_session(year, i, session)
-                    session_data.load(weather=True, telemetry=True, messages=True, laps=True, )
-                    name_session = session_data.name # e.g. 'FP1'
-                    print(name_session)
-                    circuit_name = session_data.event['EventName'] # e.g. 'Monaco Grand Prix'
-                    print(circuit_name)
-                    date = session_data.date.tz_localize(pytz.UTC).astimezone(rome_tz) # Start time of session
-                    session_info = session_data.session_info # Session info e.g. {'Meeting': {'Key': 979, 'Name': 'Australian Grand Prix', 'Location': 'Melbourne', 'Country': {'Key': 5, 'Code': 'AUS', 'Name': 'Australia'}, 'Circuit': {'Key': 10, 'ShortName': 'Melbourne'}}, 'ArchiveStatus': {'Status': 'Generating'}, 'Key': 5067, 'Type': 'Practice', 'Number': 1, 'Name': 'Practice 1', 'StartDate': datetime.datetime(2018, 3, 23, 12, 0), 'EndDate': datetime.datetime(2018, 3, 23, 13, 30), 'GmtOffset': datetime.timedelta(seconds=39600), 'Path': '2018/2018-03-25_Australian_Grand_Prix/2018-03-23_Practice_1/'}
-                    drivers = session_data.drivers # List of drivers
-                    results = session_data.results # Final result session
-                    total_laps = session_data.total_laps # Total laps of session
-                    car_data = session_data.car_data # Car data (Speed, RPM, etc.)
-                    pos_data = session_data.pos_data
-                    session_status = session_data.session_status # Status session e.g. 'Finished'
-                    track_status = session_data.track_status # Status track e.g. 'Green'
-                    t0_date = session_data.t0_date # Start time of session
-                    weather = session_data.weather_data
-                    weather_time = weather['Time']
-                    weather_air_temp = weather['AirTemp']
-                    weather_track_temp = weather['TrackTemp']
-                    weather_humidity = weather['Humidity']
-                    weather_pressure = weather['Pressure']
-                    weather_wind_speed = weather['WindSpeed']
-                    weather_wind_direction = weather['WindDirection']
-                    weather_rainfall = weather['Rainfall']
-                    print("Year: " + str(year) + "\n")
-                    print("Session: " + session + "\n")
-                    print("Circuit Name: " + str(circuit_name) + "\n")
-                    #for j in range(0, len(weather_time)):
-                    #    print("Weather Time" + str(weather_time[j]) + "\n")
-                    #    print("AirTemp: " + str(weather_air_temp[j]) + "\n")
-                    #    print("TrackTemp: " + str(weather_track_temp[j]) + "\n")
-                    #    print("Humidity: " + str(weather_humidity[j]) + "\n")
-                    #    print("Pressure: " + str(weather_pressure[j]) + "\n")
-                    #    print("WindSpeed: " + str(weather_wind_speed[j]) + "\n")
-                    #    print("WindDirection: " + str(weather_wind_direction[j]) + "\n")
-                    #    print("Rainfall: " + str(weather_rainfall[j]) + "\n")
-                    #    print("------------------------" + "\n")
+                    session = fastf1.get_session(year, i, session)
+                    session.load(weather=True, telemetry=True, messages=True, laps=True)
 
-                    # Get laps data
-                    laps_data = session_data.laps
+                    year = session.date.year
+                    date = session.date
+                    circuit_name = session.event['EventName']
+
+                    latitude = api.get_circuits(season=year, round=i, result_type='raw', auto_cast=False)[0]['Location'][
+                    'lat']  # Latitude of circuite
+                    longitude = api.get_circuits(season=year, round=i, result_type='raw', auto_cast=False)[0]['Location'][
+                    'long']  # Longitude of circuite
+                    locality = api.get_circuits(season=year, round=i, result_type='raw', auto_cast=False)[0]['Location'][
+                    'locality']  # Locality of circuite
+                    country = api.get_circuits(season=year, round=i, result_type='raw', auto_cast=False)[0]['Location'][
+                    'country']  # Country of circuite
+
+                    start_time_session = session.t0_date  # Start time of session
+                    start_time_session = start_time_session.tz_localize('UTC').tz_convert('Europe/Rome')
+
+                    # Estrai l'orario
+                    start_time_session = start_time_session.strftime("%H:%M:%S.%f")
+                    total_laps = session.total_laps
+
+                    session_status = session.session_status
+
+                    weather = session.weather_data  # Weather of session
+                    for j in range(0, len(weather)):
+                        weather_time = weather['Time']
+                        weather_air_temp = weather['AirTemp']
+                        weather_track_temp = weather['TrackTemp']
+                        weather_humidity = weather['Humidity']
+                        weather_pressure = weather['Pressure']
+                        weather_wind_speed = weather['WindSpeed']
+                        weather_wind_direction = weather['WindDirection']
+                        weather_rainfall = weather['Rainfall']
+                        print("Weather Time" + str(weather_time[j]))
+                        print("AirTemp: " + str(weather_air_temp[j]))
+                        print("TrackTemp: " + str(weather_track_temp[j]))
+                        print("Humidity: " + str(weather_humidity[j]))
+                        print("Pressure: " + str(weather_pressure[j]))
+                        print("WindSpeed: " + str(weather_wind_speed[j]))
+                        print("WindDirection: " + str(weather_wind_direction[j]))
+                        print("Rainfall: " + str(weather_rainfall[j]))
+                        print("------------------------")
+
+                    track_status = session.track_status  # Track status of session
+                    for i in range(0, len(track_status)):
+                        track_status_time = track_status['Time']
+                        track_status_status = track_status['Status']
+                        track_status_message = track_status['Message']
+                        print("Track status time: " + str(track_status_time[i]))
+                        print("Track status status: " + str(track_status_status[i]))
+                        print("Track status message: " + str(track_status_message[i]))
+
+                    laps = session.laps
+                    for index, row in laps.iterrows():
+                        driver = row['Driver']
+                        print(driver)
+                        telemetry = laps.pick_driver(driver)
+                        for i in telemetry.iterlaps():
+                            driver_telemetry = i[
+                            1].get_telemetry()  # https://docs.fastf1.dev/core.html#fastf1.core.Telemetry
+                            print(driver_telemetry['Speed'])
+                            print(driver_telemetry['nGear'])
+
+                    laps_data = session.laps
                     for index, row in laps_data.iterrows():
                         time = row['Time']
                         driver = row['Driver']
@@ -115,63 +140,41 @@ def race_data(year, db):
                         deleted_reason = row['DeletedReason']
                         fastf1_generated = row['FastF1Generated']
                         isaccurate = row['IsAccurate']
-                        print("Time: " + str(time) + "\n")
-                        print("Driver: " + str(driver) + "\n")
-                        print("DriverNumber: " + str(driver_number) + "\n")
-                        print("LapTime: " + str(lap_time) + "\n")
-                        print("LapNumber: " + str(lap_number) + "\n")
-                        print("Stint: " + str(stint) + "\n")
-                        print("PitOutTime: " + str(pit_out_time) + "\n")
-                        print("PitInTime: " + str(pit_in_time) + "\n")
-                        print("Sector1Time: " + str(sector1_time) + "\n")
-                        print("Sector2Time: " + str(sector2_time) + "\n")
-                        print("Sector3Time: " + str(sector3_time) + "\n")
-                        print("Sector1SessionTime: " + str(sector1_session_time) + "\n")
-                        print("Sector2SessionTime: " + str(sector2_session_time) + "\n")
-                        print("Sector3SessionTime: " + str(sector3_session_time) + "\n")
-                        print("SpeedI1: " + str(speedI1) + "\n")
-                        print("SpeedI2: " + str(speedI2) + "\n")
-                        print("SpeedFL: " + str(speedFL) + "\n")
-                        print("SpeedST: " + str(speedST) + "\n")
-                        print("IsPersonalBest: " + str(isPersonalBest) + "\n")
-                        print("Compound: " + str(compound) + "\n")
-                        print("TyreLife: " + str(tyrelife) + "\n")
-                        print("FreshTyre: " + str(freshtyre) + "\n")
-                        print("Team: " + str(team) + "\n")
-                        print("LapStartTime: " + str(lap_start_time) + "\n")
-                        print("LapStartDate: " + str(lap_start_date) + "\n")
-                        print("TrackStatus: " + str(track_status) + "\n")
-                        print("Position: " + str(position) + "\n")
-                        print("Deleted: " + str(deleted) + "\n")
-                        print("DeletedReason: " + str(deleted_reason) + "\n")
-                        print("FastF1Generated: " + str(fastf1_generated) + "\n")
-                        print("IsAccurate: " + str(isaccurate) + "\n")
-                        print("------------------------" + "\n")
 
-                    # Get telemetry data and car data
-                    telemetry_data = session_data.car_data
-                    for car_number, car_data in telemetry_data.items():
-                        #print(f"Dati di telemetria per l'auto numero {car_number}:\n")
-                        # Converti i dati di telemetria in un DataFrame di Pandas
-                        df = pd.DataFrame(car_data)
-
-                        # Itera su ogni riga del DataFrame e stampa i dati
-                        #for index, row in df.iterrows():
-                        #    for field in ['Time', 'Speed', 'RPM', 'NGear', 'Throttle', 'Brake', 'DRS', 'X', 'Y', 'Z', 'Status', 'SessionTime', 'Date', 'Source']:
-                        #        if field in row:
-                        #            print(f"{field}: {row[field]}")
-                        #            print(f"{field}: {row[field]}\n")
-                        #        else:
-                        #            print(f"{field}: Non disponibile")
-                        #            print(f"{field}: Non disponibile\n")
-                        #        print("------------------------")  # Stampa una linea di separazione dopo ogni lista
-                        #    print("========================")  # Stampa una linea di separazione dopo i dati di ogni auto
-
-                    continue
+                        print("Time: " + str(time))
+                        print("Driver: " + str(driver))
+                        print("DriverNumber: " + str(driver_number))
+                        print("LapTime: " + str(lap_time))
+                        print("LapNumber: " + str(lap_number))
+                        print("Stint: " + str(stint))
+                        print("PitOutTime: " + str(pit_out_time))
+                        print("PitInTime: " + str(pit_in_time))
+                        print("Sector1Time: " + str(sector1_time))
+                        print("Sector2Time: " + str(sector2_time))
+                        print("Sector3Time: " + str(sector3_time))
+                        print("Sector1SessionTime: " + str(sector1_session_time))
+                        print("Sector2SessionTime: " + str(sector2_session_time))
+                        print("Sector3SessionTime: " + str(sector3_session_time))
+                        print("SpeedI1: " + str(speedI1))
+                        print("SpeedI2: " + str(speedI2))
+                        print("SpeedFL: " + str(speedFL))
+                        print("SpeedST: " + str(speedST))
+                        print("IsPersonalBest: " + str(isPersonalBest))
+                        print("Compound: " + str(compound))
+                        print("TyreLife: " + str(tyrelife))
+                        print("FreshTyre: " + str(freshtyre))
+                        print("Team: " + str(team))
+                        print("LapStartTime: " + str(lap_start_time))
+                        print("LapStartDate: " + str(lap_start_date))
+                        print("TrackStatus: " + str(track_status))
+                        print("Position: " + str(position))
+                        print("Deleted: " + str(deleted))
+                        print("DeletedReason: " + str(deleted_reason))
+                        print("FastF1Generated: " + str(fastf1_generated))
+                        print("IsAccurate: " + str(isaccurate))
+                        print("------------------------")
                 except Exception as e:
-                    print(e)
-                    continue
-
+                    print("ok")
     else:
         response = requests.get(url)
         data = response.json()
