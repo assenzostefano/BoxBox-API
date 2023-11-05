@@ -12,6 +12,49 @@
     "Start time session": "2017-03-24 12:00:00",
     "Total Laps": "58",
 
+    "Results": [
+      {
+       "Number":  "44",
+       "Position": "1",
+       "PositionText": "1",
+       "Points": "25",
+       "Driver": {
+         "driver_id": "hamilton",
+         "permanent_number": "44",
+         "code": "HAM",
+         "url": "http://en.wikipedia.org/wiki/Lewis_Hamilton",
+         "given_name": "Lewis",
+         "family_name": "Hamilton",
+         "date_of_birth": "1985-01-07",
+         "nationality": "British"
+       },
+        "Constructor": {
+          "constructor_id": "mercedes",
+          "url": "http://en.wikipedia.org/wiki/Mercedes-Benz_in_Formula_One",
+          "name": "Mercedes",
+          "nationality": "German"
+        },
+        "Time": {
+          "millis": "5405966",
+          "time": "1:30:05.761"
+        },
+        "FastestLap": {
+          "rank": "2",
+          "lap": "56",
+          "Time": {
+            "time": "1:26.538"
+          },
+          "AverageSpeed": {
+            "units": "kph",
+            "speed": "222.086"
+          }
+        },
+        "grid": "1",
+        "laps": "57",
+        "status": "Finished"
+      }
+    ],
+
     "Session status": [
       {"Time": "0 days 00:00:04.677000", "Status": "Inactive"},
       {"Time": "0 days 04:15:59.115000", "Status": "Started"},
@@ -41,7 +84,7 @@
       {"Date": "", "Speed": "", "RPM": "", "nGear": "", "Throttle": "", "Brake": "", "DRS": "", "Source": ""},
       {"Date": "", "Speed": "", "RPM": "", "nGear": "", "Throttle": "", "Brake": "", "DRS": "", "Source": ""},
       {"Date": "", "Speed": "", "RPM": "", "nGear": "", "Throttle": "", "Brake": "", "DRS": "", "Source": ""},
-      {"Date": "", "Speed": "", "RPM": "", "nGear": "", "Throttle": "", "Brake": "", "DRS": "", "Source": ""},
+      {"Date": "", "Speed": "", "RPM": "", "nGear": "", "Throttle": "", "Brake": "", "DRS": "", "Source": ""}
     ],
 
     "Telemetry data": [
@@ -49,7 +92,7 @@
       {"Time": "0 days 01:03:53.422000", "Driver": "VER", "DriverNumber": "1", "LapTime": "0 days 00:01:37.528000", "LapNumber": "1.0", "Stint": "1.0", "PitOutTime": "NaT", "PitInTime": "NaT", "Sector1Time": "NaT", "Sector2Time": "0 days 00:00:35.848000", "Sector3Time": "0 days 00:00:26.431000", "Sector1SessionTime": "NaT", "Sector2SessionTime": "0 days 01:03:27.035000", "Sector3SessionTime": "0 days 01:03:53.493000", "SpeedI1": "209.0", "SpeedI2": "185.0", "SpeedFL": "268.0", "SpeedST": "304.0", "IsPersonalBest": "False", "Compound": "MEDIUM", "TyreLife": "1.0", "FreshTyre": "True", "Team": "Red Bull Racing", "LapStartTime": "0 days 01:02:16.435000", "LapStartDate": "2022-05-08 19:33:16.443000", "TrackStatus": "1", "Position": "2.0", "Deleted": "False", "DeletedReason": "", "FastF1Generated": "False", "IsAccurate": "False"},
       {"Time": "0 days 01:03:53.422000", "Driver": "VER", "DriverNumber": "1", "LapTime": "0 days 00:01:37.528000", "LapNumber": "1.0", "Stint": "1.0", "PitOutTime": "NaT", "PitInTime": "NaT", "Sector1Time": "NaT", "Sector2Time": "0 days 00:00:35.848000", "Sector3Time": "0 days 00:00:26.431000", "Sector1SessionTime": "NaT", "Sector2SessionTime": "0 days 01:03:27.035000", "Sector3SessionTime": "0 days 01:03:53.493000", "SpeedI1": "209.0", "SpeedI2": "185.0", "SpeedFL": "268.0", "SpeedST": "304.0", "IsPersonalBest": "False", "Compound": "MEDIUM", "TyreLife": "1.0", "FreshTyre": "True", "Team": "Red Bull Racing", "LapStartTime": "0 days 01:02:16.435000", "LapStartDate": "2022-05-08 19:33:16.443000", "TrackStatus": "1", "Position": "2.0", "Deleted": "False", "DeletedReason": "", "FastF1Generated": "False", "IsAccurate": "False"},
       {"Time": "0 days 01:03:53.422000", "Driver": "VER", "DriverNumber": "1", "LapTime": "0 days 00:01:37.528000", "LapNumber": "1.0", "Stint": "1.0", "PitOutTime": "NaT", "PitInTime": "NaT", "Sector1Time": "NaT", "Sector2Time": "0 days 00:00:35.848000", "Sector3Time": "0 days 00:00:26.431000", "Sector1SessionTime": "NaT", "Sector2SessionTime": "0 days 01:03:27.035000", "Sector3SessionTime": "0 days 01:03:53.493000", "SpeedI1": "209.0", "SpeedI2": "185.0", "SpeedFL": "268.0", "SpeedST": "304.0", "IsPersonalBest": "False", "Compound": "MEDIUM", "TyreLife": "1.0", "FreshTyre": "True", "Team": "Red Bull Racing", "LapStartTime": "0 days 01:02:16.435000", "LapStartDate": "2022-05-08 19:33:16.443000", "TrackStatus": "1", "Position": "2.0", "Deleted": "False", "DeletedReason": "", "FastF1Generated": "False", "IsAccurate": "False"},
-      {"Time": "0 days 01:03:53.422000", "Driver": "VER", "DriverNumber": "1", "LapTime": "0 days 00:01:37.528000", "LapNumber": "1.0", "Stint": "1.0", "PitOutTime": "NaT", "PitInTime": "NaT", "Sector1Time": "NaT", "Sector2Time": "0 days 00:00:35.848000", "Sector3Time": "0 days 00:00:26.431000", "Sector1SessionTime": "NaT", "Sector2SessionTime": "0 days 01:03:27.035000", "Sector3SessionTime": "0 days 01:03:53.493000", "SpeedI1": "209.0", "SpeedI2": "185.0", "SpeedFL": "268.0", "SpeedST": "304.0", "IsPersonalBest": "False", "Compound": "MEDIUM", "TyreLife": "1.0", "FreshTyre": "True", "Team": "Red Bull Racing", "LapStartTime": "0 days 01:02:16.435000", "LapStartDate": "2022-05-08 19:33:16.443000", "TrackStatus": "1", "Position": "2.0", "Deleted": "False", "DeletedReason": "", "FastF1Generated": "False", "IsAccurate": "False"},
-    ],
+      {"Time": "0 days 01:03:53.422000", "Driver": "VER", "DriverNumber": "1", "LapTime": "0 days 00:01:37.528000", "LapNumber": "1.0", "Stint": "1.0", "PitOutTime": "NaT", "PitInTime": "NaT", "Sector1Time": "NaT", "Sector2Time": "0 days 00:00:35.848000", "Sector3Time": "0 days 00:00:26.431000", "Sector1SessionTime": "NaT", "Sector2SessionTime": "0 days 01:03:27.035000", "Sector3SessionTime": "0 days 01:03:53.493000", "SpeedI1": "209.0", "SpeedI2": "185.0", "SpeedFL": "268.0", "SpeedST": "304.0", "IsPersonalBest": "False", "Compound": "MEDIUM", "TyreLife": "1.0", "FreshTyre": "True", "Team": "Red Bull Racing", "LapStartTime": "0 days 01:02:16.435000", "LapStartDate": "2022-05-08 19:33:16.443000", "TrackStatus": "1", "Position": "2.0", "Deleted": "False", "DeletedReason": "", "FastF1Generated": "False", "IsAccurate": "False"}
+    ]
   }
 }

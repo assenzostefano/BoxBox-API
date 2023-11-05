@@ -6,9 +6,9 @@ import pymongo
 import requests
 from dotenv import load_dotenv
 
-from scripts.constructor_info import constructor
-from scripts.session_data import race_data
-from src.utility.wikipedia_data import wikipedia_data
+from src.scripts.constructor_info import constructor
+from src.scripts.general.wikipedia_data import wikipedia_data
+from src.scripts.session_data import race_data
 
 load_dotenv()
 

@@ -1,4 +1,4 @@
-from src.utility.wikipedia_data import wikipedia_data
+from src.scripts.general.wikipedia_data import wikipedia_data
 
 
 def constructor(constructors, db):
