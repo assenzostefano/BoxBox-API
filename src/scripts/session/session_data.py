@@ -5,7 +5,7 @@ import fastf1
 import pytz
 from dotenv import load_dotenv
 
-from src.scripts.general.ergast import ergast_race_result, ergast_get_race_schedule
+from src.scripts.general.ergast import Ergast
 from src.scripts.session.car import car
 from src.scripts.session.lap import lap
 from src.scripts.session.track import track
@@ -28,7 +28,7 @@ fastf1.Cache.enable_cache(cache_directory)  # optionally change cache location
 # Funzione per salvare i risultati delle gare per un dato anno
 def session_data(year, db):
     if year >= 2018:
-        race_schedule = ergast_get_race_schedule(year)
+        race_schedule = Ergast(year=year).race_schedule()
         max_race_number = len(race_schedule)
 
         sessions = ['FP1', 'FP2', 'FP3', 'Q', 'S', 'SS', 'R']
@@ -67,4 +67,4 @@ def session_data(year, db):
                 except Exception as e:
                     print(e)
     else:
-        ergast_data = ergast_race_result(year,)
+        ergast_data = Ergast(year=year).race_result()

@@ -1,0 +1,53 @@
+{
+  "_id": "albert_park", // ID of the document is circuit_id
+  "Circuit Name": "Albert Park Grand Prix Circuit", // Name of the circuit
+  "Circuit URL": "http://en.wikipedia.org/wiki/Melbourne_Grand_Prix_Circuit", // URL of the circuit
+
+  "Wikipedia Data": [
+    {"type":"standard","title":"Monza Circuit","displaytitle":"<span class=\"mw-page-title-main\">Monza Circuit</span>","namespace":{"id":0,"text":""},"wikibase_item":"Q171417","titles":{"canonical":"Monza_Circuit","normalized":"Monza Circuit","display":"<span class=\"mw-page-title-main\">Monza Circuit</span>"},"pageid":952083,"thumbnail":{"source":"https://upload.wikimedia.org/wikipedia/en/f/f1/Autodromo_Nazionale_Monza_circuit_logo.png","width":316,"height":315},"originalimage":{"source":"https://upload.wikimedia.org/wikipedia/en/f/f1/Autodromo_Nazionale_Monza_circuit_logo.png","width":316,"height":315},"lang":"en","dir":"ltr","revision":"1185846930","tid":"e9365fa0-86c8-11ee-bcdc-0f7088612c4e","timestamp":"2023-11-19T10:13:44Z","description":"Race track in Italy","description_source":"local","coordinates":{"lat":45.62055556,"lon":9.28944444},"content_urls":{"desktop":{"page":"https://en.wikipedia.org/wiki/Monza_Circuit","revisions":"https://en.wikipedia.org/wiki/Monza_Circuit?action=history","edit":"https://en.wikipedia.org/wiki/Monza_Circuit?action=edit","talk":"https://en.wikipedia.org/wiki/Talk:Monza_Circuit"},"mobile":{"page":"https://en.m.wikipedia.org/wiki/Monza_Circuit","revisions":"https://en.m.wikipedia.org/wiki/Special:History/Monza_Circuit","edit":"https://en.m.wikipedia.org/wiki/Monza_Circuit?action=edit","talk":"https://en.m.wikipedia.org/wiki/Talk:Monza_Circuit"}},"extract":"The Monza Circuit is a 5.793 km (3.600 mi) race track near the city of Monza, north of Milan, in Italy. Built in 1922, it was the world's third purpose-built motor racing circuit after Brooklands and Indianapolis and the oldest in mainland Europe. The circuit's biggest event is the Italian Grand Prix. With the exception of the 1980 running when the track was closed while undergoing refurbishment, the race has been hosted there since 1949.","extract_html":"<p>The <b>Monza Circuit</b> is a 5.793 km (3.600 mi) race track near the city of Monza, north of Milan, in Italy. Built in 1922, it was the world's third purpose-built motor racing circuit after Brooklands and Indianapolis and the oldest in mainland Europe. The circuit's biggest event is the Italian Grand Prix. With the exception of the 1980 running when the track was closed while undergoing refurbishment, the race has been hosted there since 1949.</p>"}
+  ],
+
+  // Location of the circuit
+    "Location": {
+      "Latitude": -37.8497,
+      "Longitude": 144.968,
+      "Locality": "Melbourne",
+      "Country": "Australia"
+    },
+
+  "Years": {
+    "1950": {
+      "Rotation": "",
+      "Corners": [
+        {
+          "X": "",
+          "Y": "",
+          "Number": "",
+          "Letter": "",
+          "Angle": "",
+          "Distance": ""
+        }
+      ],
+      "Marshal Lights": [
+        {
+          "X": "",
+          "Y": "",
+          "Number": "",
+          "Letter": "",
+          "Angle": "",
+          "Distance": ""
+        }
+      ],
+      "Marshal Sectors": [
+        {
+          "X": "",
+          "Y": "",
+          "Number": "",
+          "Letter": "",
+          "Angle": "",
+          "Distance": ""
+        }
+      ]
+    }
+  }
+}
