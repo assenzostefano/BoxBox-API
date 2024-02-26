@@ -12,6 +12,21 @@ def start():
     identifier = ['FP1']
     print("Starting...")
 
+    # Driver data
+    for i in range(1950, 2023):
+        identifier = ['FP1', 'FP2', 'FP3', 'Q', 'S', 'SS', 'R']
+        for a in identifier:
+            for b in range(1, 50):
+                print("Year: " + str(i) + " Identifier: " + str(a) + " Round: " + str(b))
+                time.sleep(2)
+                driver = driver_info(year=i, identifier=a, round=b)
+                print(driver)
+
+                if driver == None:
+                    break
+                else:
+                    t = threading.Thread(target=database, args=(driver, 'Years', 'drivers', '_id')).start()
+
     # Circuit data
     for i in range(1950, 2024):
         print("Year: " + str(i))
@@ -33,12 +48,6 @@ def start():
                     except Exception as e:
                         print("Error: " + str(e))
     print("Finito")
-
-    # Driver data
-    for i in range(1950, 2023):
-        for a in identifier:
-            for b in range(1, 50):
-                driver = driver_info(year=i, db=db)
 
     # Constructor data
     for i in range(1950, 2023):

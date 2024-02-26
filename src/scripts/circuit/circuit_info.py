@@ -24,7 +24,6 @@ def circuit_info(year, identifier, round, ergast_data):
             marshal_sectors_data = []
             print("Round: " + str(round) + " Identifier: " + identifier + " Year: " + str(year))
 
-            # TODO: Ogni tanto da errore sugli ultimi anni, capire il perchè
             try:
                 session = fastf1.get_session(year, round, identifier)
 
