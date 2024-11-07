@@ -17,6 +17,6 @@ class Ergast:
         data = race_schedule(year=year)
         return data
 
-    def drivers_data(year):
-        data = drivers_data(year=year)
+    def drivers_data(year, round, result_type):
+        data = drivers_data(year, round, result_type)
         return data

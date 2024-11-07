@@ -1,15 +1,12 @@
 import os
 
-import yukinator
+from fastf1.ergast import Ergast
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 cache_directory = os.path.join(current_directory, '../../../../../', 'cache')
 
-y = yukinator.Yuki()
-y = yukinator.Yuki(cache_dir=cache_directory, expires_after=9000, force_clear=True)
+ergast = Ergast()
 
-def drivers_data(year):
-    data = y.get_drivers(year=year)
-    return data
-
-#print(drivers_data(year=2021)[0].dateOfBirth)
+def drivers_data(year, round, result_type):
+    driver = ergast.get_driver_info(season=year, round=round, result_type=result_type)
+    return driver

@@ -12,8 +12,8 @@ current_directory = os.path.dirname(os.path.abspath(__file__))
 
 # Costruisci il percorso della cartella di cache relativo al percorso corrente
 cache_directory = os.path.join(current_directory, '../../../../../', 'cache')
+#fastf1.Cache.enable_cache(cache_directory)  # optionally change cache location
 
-fastf1.Cache.enable_cache(cache_directory)  # optionally change cache location
 def race_result(year):
     ergast = Ergast(result_type='pandas', auto_cast=True)
     seasons = ergast.get_race_results(season=year, limit=1000)
