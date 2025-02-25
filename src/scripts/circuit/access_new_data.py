@@ -33,20 +33,20 @@ def circuit_info(year, identifier, round):
                     year: {
                         "Rotation": circuit_info_spec.rotation,
                         "Corners": [
-                            for i in range(len(circuit_info_spec.corners)):
-                                {
-                                    "Corner Number": i,
-                                    "Corner Name": circuit_info_spec.corners[i],
-                                    "Corner Type": circuit_info_spec.corner_types[i],
-                                    "Corner Coordinates": {
-                                        "Latitude": circuit_info_spec.corner_latitudes[i],
-                                        "Longitude": circuit_info_spec.corner_longitudes[i]
-                                    }
-                                }
+                            {
+                                "Corner Number": i,
+                                "Corner Name": circuit_info_spec.corners[i],
+                                "Corner Type": circuit_info_spec.corner_types[i],
+                                "Corner Coordinates": {
+                                    "Latitude": circuit_info_spec.corner_latitudes[i],
+                                    "Longitude": circuit_info_spec.corner_longitudes[i]
+                                },
+                            } for i in range(len(circuit_info_spec.corners))
                         ],
+                    },
                 },
-            },
-        }
+            }
+    
 
             return circuit_data
         except Exception as e:
