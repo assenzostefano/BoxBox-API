@@ -35,14 +35,18 @@ def database(data, data_search, collection_name, value_search_db):
         # If data is not a list, insert only one document
         print("ok")
 
-        id = data['_id']
-        # Search on Mongodb if the document exists
-        existing_doc = collection.find_one({'_id': id})
-        if existing_doc is not None:
-            # If the document exists, update it
-            update_one(data=data, collection_name=collection_name, value_search_db=value_search_db, existing_doc=existing_doc, data_search=data_search)
-        else:
-            # If the document doesn't exist, insert it
-            insert_one(data=data, collection_name=collection_name)
+        try:
+            id = data['_id']
+            # Search on Mongodb if the document exists
+            existing_doc = collection.find_one({'_id': id})
+            if existing_doc is not None:
+                # If the document exists, update it
+                update_one(data=data, collection_name=collection_name, value_search_db=value_search_db, existing_doc=existing_doc, data_search=data_search)
+            else:
+                # If the document doesn't exist, insert it
+                insert_one(data=data, collection_name=collection_name)
+        except:
+            print("PROBLEMA COL DB")
+            print(data)
 
     client.close()

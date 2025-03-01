@@ -3,6 +3,7 @@ import time
 import fastf1
 
 from fastf1.core import DataNotLoadedError
+import fastf1.events
 
 from src.database.database import database
 from src.scripts.circuit.access_new_data import circuit_info
@@ -53,25 +54,55 @@ def start():
     #                t = threading.Thread(target=database, args=(driver, 'Years', 'drivers', '_id')).start()
 
     # Circuit data
-    for i in range(2019, 2024):
+    for i in range(2019, 2025):
         print("Year: " + str(i))
         if i <= 2017:
             circuit = circuit_info(year=i, identifier="FP1", round=1)
             t = threading.Thread(target=database, args=(circuit, 'Years', 'circuits', '_id')).start()
         else:
-            for b in range(1, 50):
-                #try:
-                circuit_data = circuit_info(year=i, identifier="FP1", round=b)
-                if circuit_data == None:
-                    break
+            number_circuit = fastf1.get_event_schedule(i)
+            print(number_circuit.is_testing())
+            for b in number_circuit['RoundNumber'].unique():
+                print("Number: " + str(b))
+                if b == 0:
+                    if number_circuit.is_testing()[b]:
+                        print("Test session")
+                    else:
+                        circuit_data = circuit_info(year=i, identifier="FP1", round=b)
+                        if circuit_data == None:
+                            break
+                        elif circuit_data == 'DataNotLoadedError':
+                            circuit_data = circuit_info(year=i, identifier="R", round=b)
+                            if circuit_data == None or circuit_data == 'DataNotLoadedError':
+                                break
+                            else:
+                                print(circuit_data)
+                                t = threading.Thread(target=database, args=(circuit_data, 'Years', 'circuits', '_id')).start()
+                        else:
+                            print(circuit_data)
+                            t = threading.Thread(target=database, args=(circuit_data, 'Years', 'circuits', '_id')).start()
                 else:
-                    t = threading.Thread(target=database, args=(circuit_data, 'Years', 'circuits', '_id')).start()
-                #except Exception as e:
-                #    print("Error: " + str(e))
+                    if number_circuit.is_testing()[b-1]:
+                        print("Test session")
+                    else:
+                        circuit_data = circuit_info(year=i, identifier="FP1", round=b)
+                        if circuit_data == None:
+                            break
+                        elif circuit_data == 'DataNotLoadedError':
+                            circuit_data = circuit_info(year=i, identifier="R", round=b)
+                            if circuit_data == None or circuit_data == 'DataNotLoadedError':
+                                break
+                            else:
+                                print(circuit_data)
+                                t = threading.Thread(target=database, args=(circuit_data, 'Years', 'circuits', '_id')).start()
+                        else:
+                            print(circuit_data)
+                            t = threading.Thread(target=database, args=(circuit_data, 'Years', 'circuits', '_id')).start()
+
     print("Finito")
 
     # Constructor data
-    for i in range(1950, 2023):
+    for i in range(1950, 2024):
         for a in identifier:
             for b in range(1, 50):
                 #data = fastf1.get_session(i, b, a)
