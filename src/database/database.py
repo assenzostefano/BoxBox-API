@@ -21,6 +21,7 @@ def database(data, data_search, collection_name, value_search_db):
 
     # Check if data is a list
     if isinstance(data, list):
+        print("è una lista")
         for i in data:
             id = i['_id']
             # Search on Mongodb if the document exists
@@ -33,6 +34,15 @@ def database(data, data_search, collection_name, value_search_db):
     else:
         # If data is not a list, insert only one document
         print("ok")
-        #insert_one(data=data, collection_name=collection_name)
+
+        id = data['_id']
+        # Search on Mongodb if the document exists
+        existing_doc = collection.find_one({'_id': id})
+        if existing_doc is not None:
+            # If the document exists, update it
+            update_one(data=data, collection_name=collection_name, value_search_db=value_search_db, existing_doc=existing_doc, data_search=data_search)
+        else:
+            # If the document doesn't exist, insert it
+            insert_one(data=data, collection_name=collection_name)
 
     client.close()

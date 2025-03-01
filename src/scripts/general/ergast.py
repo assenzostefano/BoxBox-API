@@ -5,8 +5,8 @@ from src.scripts.general.Ergast.race.race_schedule import race_schedule
 
 
 class Ergast:
-    def circuits_data(year):
-        data = circuits_data(year=year)
+    def circuits_data(year, round):
+        data = circuits_data(year=year, round=round)
         return data
 
     def race_result(year):

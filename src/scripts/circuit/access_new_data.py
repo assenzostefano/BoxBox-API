@@ -6,62 +6,70 @@ from src.scripts.general.ergast import Ergast
 
 def circuit_info(year, identifier, round):
     if year >= 2018:
-        session = fastf1.get_session(year=year, gp=round, identifier='FP1')
+        session = fastf1.get_session(year=year, gp=round, identifier='R')
         session.load()
 
+        print("Round: " + str(round))
+
         try:
-            circuit_info_gen = Ergast.circuits_data(year)
-            circuit_info_spec = session.get_circuit_info() #Ghe se un problema con questo
-            
+            circuit_info_gen = Ergast.circuits_data(year, round)
+            circuit_info_spec = session.get_circuit_info().corners #Ghe se un problema con questo
+            circuit_info = session.get_circuit_info()
+            marshal_lights_df = circuit_info.marshal_lights
+            marshal_sectors_df = circuit_info.marshal_sectors
+
+            corners_list = []
+            for i, row in circuit_info_spec.iterrows():
+                corners_list.append({
+                    "Corner Number": i,
+                    "Corner Name": row['Number'],
+                    "Corner Letter": row['Letter'],
+                    "Corner Angle": row['Angle'],
+                    "Corner Distance": row['Distance'],
+                    "Coordinates": {"X": row["X"], "Y": row["Y"]}
+                })
+        
+            marshal_lights = []
+            for i, row in marshal_lights_df.iterrows():
+                marshal_lights.append({
+                    "Number": row['Number'],
+                    "Coordinates": {"X": row["X"], "Y": row["Y"]}
+                })
+        
+            marshal_sectors = []
+            for i, row in marshal_sectors_df.iterrows():
+                marshal_sectors.append({
+                    "Number": row['Number'],
+                    "Coordinates": {"X": row["X"], "Y": row["Y"]},
+                })
+
+
             circuit_data = {
-                "_id": circuit_info_gen["circuitId"],
-                "Circuit Name": circuit_info_gen["circuitName"],
-                "Circuit URL": circuit_info_gen["circuitUrl"],
-
+                "_id": circuit_info_gen[0]['circuitId'],
+                "Circuit Name": circuit_info_gen[0]["circuitName"],
+                "Circuit URL": circuit_info_gen[0]["circuitUrl"],
                 "Wikipedia Data": [
-                    "TODO: Wikipedia Data"
+                "TODO: Wikipedia Data"
                 ],
-
                 "Location": {
-                    "Latitude": circuit_info_gen["lat"],
-                    "Longitude": circuit_info_gen["long"],
-                    "Locality": circuit_info_gen["locality"],
-                    "Country": circuit_info_gen["country"]
+                "Latitude": circuit_info_gen[0]['Location']["lat"],
+                "Longitude": circuit_info_gen[0]['Location']["long"],
+                "Locality": circuit_info_gen[0]['Location']["locality"],
+                "Country": circuit_info_gen[0]['Location']["country"]
                 },
-
                 "Years": {
-                    year: {
-                        "Rotation": circuit_info_spec.rotation,
-                        "Corners": [
-                            {
-                                "Corner Number": i,
-                                "Corner Name": circuit_info_spec.corners[i],
-                                "Corner Type": circuit_info_spec.corner_types[i],
-                                "Corner Coordinates": {
-                                    "Latitude": circuit_info_spec.corner_latitudes[i],
-                                    "Longitude": circuit_info_spec.corner_longitudes[i]
-                                },
-                            } for i in range(len(circuit_info_spec.corners))
-                        ],
-                    },
-                },
+                    str(year): {
+                        "Corners": corners_list,
+                        "Marshal Lights": marshal_lights,
+                        "Marshal Sectors": marshal_sectors,
+                    }
+                }
             }
     
-
             return circuit_data
         except Exception as e:
             print(e)
-            
-        #if session_data:
-        #    print(session_data)
-        #    corners = session_data.corners
-        #    marshal_lights = session_data.marshal_lights
-        #    marshal_sectors = session_data.marshal_sectors
-#
-        #    # Converti i dati in DataFrame di Pandas
-        #    corners_df = pd.DataFrame(corners)
-        #    marshal_lights_df = pd.DataFrame(marshal_lights)
-        #    marshal_sectors_df = pd.DataFrame(marshal_sectors)
+            return None
 
     else:
         circuit_data_list = circuit_1950_to_2017(year)

@@ -18,9 +18,9 @@ try:
 except:
     print("Impossibile accedere alla cache")
 
-def circuits_data(year):
+def circuits_data(year, round):
     ergast = Ergast(result_type='pandas', auto_cast=True)
-    circuits = ergast.get_circuits(season=year, limit=30)
+    circuits = ergast.get_circuits(season=year, round=round, limit=30)
     data = []
     
     for index, row in circuits.iterrows():

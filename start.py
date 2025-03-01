@@ -59,17 +59,15 @@ def start():
             circuit = circuit_info(year=i, identifier="FP1", round=1)
             t = threading.Thread(target=database, args=(circuit, 'Years', 'circuits', '_id')).start()
         else:
-            for a in identifier:
-                for b in range(1, 50):
-                    try:
-                        circuit_data = circuit_info(year=i, identifier="FP1", round=1)
-                        print(list(circuit_data))
-                        if circuit_data == None:
-                            continue
-                        else:
-                            t = threading.Thread(target=database, args=(circuit_data, 'Years', 'circuits', '_id')).start()
-                    except Exception as e:
-                        print("Error: " + str(e))
+            for b in range(1, 50):
+                #try:
+                circuit_data = circuit_info(year=i, identifier="FP1", round=b)
+                if circuit_data == None:
+                    break
+                else:
+                    t = threading.Thread(target=database, args=(circuit_data, 'Years', 'circuits', '_id')).start()
+                #except Exception as e:
+                #    print("Error: " + str(e))
     print("Finito")
 
     # Constructor data
