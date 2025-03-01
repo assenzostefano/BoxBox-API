@@ -63,7 +63,7 @@ def start():
                 for b in range(1, 50):
                     try:
                         circuit_data = circuit_info(year=i, identifier="FP1", round=1)
-                        print(circuit_data)
+                        print(list(circuit_data))
                         if circuit_data == None:
                             continue
                         else:
