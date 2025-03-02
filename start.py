@@ -54,7 +54,7 @@ def start():
     #                t = threading.Thread(target=database, args=(driver, 'Years', 'drivers', '_id')).start()
 
     # Circuit data
-    for i in range(2019, 2025):
+    for i in range(2018, 2025):
         print("Year: " + str(i))
         if i <= 2017:
             circuit = circuit_info(year=i, identifier="FP1", round=1)
@@ -76,10 +76,8 @@ def start():
                             if circuit_data == None or circuit_data == 'DataNotLoadedError':
                                 break
                             else:
-                                print(circuit_data)
                                 t = threading.Thread(target=database, args=(circuit_data, 'Years', 'circuits', '_id')).start()
                         else:
-                            print(circuit_data)
                             t = threading.Thread(target=database, args=(circuit_data, 'Years', 'circuits', '_id')).start()
                 else:
                     if number_circuit.is_testing()[b-1]:
@@ -93,10 +91,8 @@ def start():
                             if circuit_data == None or circuit_data == 'DataNotLoadedError':
                                 break
                             else:
-                                print(circuit_data)
                                 t = threading.Thread(target=database, args=(circuit_data, 'Years', 'circuits', '_id')).start()
                         else:
-                            print(circuit_data)
                             t = threading.Thread(target=database, args=(circuit_data, 'Years', 'circuits', '_id')).start()
 
     print("Finito")

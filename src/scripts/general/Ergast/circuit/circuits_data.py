@@ -1,10 +1,8 @@
-import logging
-import os
-import time
-
-import fastf1
-import requests
 from fastf1.ergast import Ergast
+import requests
+import logging
+import fastf1
+import os
 
 fastf1.logger.set_log_level(logging.ERROR)  # optionally set log level to reduce output
 

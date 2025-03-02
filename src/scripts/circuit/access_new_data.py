@@ -1,8 +1,8 @@
-import fastf1
-import pandas as pd
-import time
 from src.scripts.circuit.access_old_data import circuit_1950_to_2017
 from src.scripts.general.ergast import Ergast
+
+import pandas as pd
+import fastf1
 import os
 
 def circuit_info(year, identifier, round):
@@ -12,15 +12,25 @@ def circuit_info(year, identifier, round):
             cache_directory = os.path.join(current_directory, '../../../', 'cache')
             fastf1.Cache.enable_cache(cache_directory)  # optionally change cache location
             session = fastf1.get_session(year=year, gp=round, identifier=identifier)
-            session.load(laps=True, telemetry=True, weather=True, messages=True, livedata=True)
-
+            try:
+                session.load(laps=True, telemetry=True, weather=True, messages=True, livedata=True)
+            except:
+                session.load()
             print("Round: " + str(round))
 
-            circuit_info_gen = Ergast.circuits_data(year, round)
-            circuit_info_spec = session.get_circuit_info().corners #Ghe se un problema con questo
-            circuit_info = session.get_circuit_info()
-            marshal_lights_df = circuit_info.marshal_lights
-            marshal_sectors_df = circuit_info.marshal_sectors
+            try:
+                circuit_info_gen = Ergast.circuits_data(year, round)
+                circuit_info_spec = session.get_circuit_info().corners #Ghe se un problema con questo
+                circuit_info = session.get_circuit_info()
+                marshal_lights_df = circuit_info.marshal_lights
+                marshal_sectors_df = circuit_info.marshal_sectors
+            except:
+                session.load()
+                circuit_info_gen = Ergast.circuits_data(year, round)
+                circuit_info_spec = session.get_circuit_info().corners #Ghe se un problema con questo
+                circuit_info = session.get_circuit_info()
+                marshal_lights_df = circuit_info.marshal_lights
+                marshal_sectors_df = circuit_info.marshal_sectors
             corners_list = []
             for i, row in circuit_info_spec.iterrows():
                 corners_list.append({
