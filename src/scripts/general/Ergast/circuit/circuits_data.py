@@ -1,24 +1,40 @@
+from fastf1.ergast.interface import ErgastError, ErgastJsonError, ErgastInvalidRequestError
 from fastf1.ergast import Ergast
 import requests
 import logging
 import fastf1
 import os
 
-fastf1.logger.set_log_level(logging.ERROR)  # optionally set log level to reduce output
+current_directory = os.path.dirname(os.path.abspath(__file__)) # Take the current directory
+cache_directory = os.path.join(current_directory, '../../../../../', 'cache') # Join the current directory with the cache folder
 
-# Ottieni il percorso della cartella corrente
-current_directory = os.path.dirname(os.path.abspath(__file__))
+fastf1.logger.set_log_level(logging.ERROR)  # Only show errors FASTF1
 
 # FastF1 Cache
 try:
-    cache_directory = os.path.join(current_directory, '../../../../../', 'cache')
-    fastf1.Cache.enable_cache(cache_directory)  # optionally change cache location
+    fastf1.Cache.enable_cache(cache_directory)
 except:
     print("Impossibile accedere alla cache")
 
+def jolpi_api(year, round):
+    try:
+        circuit_id = fastf1.get_session()
+
+        url = "https://api.jolpi.ca/ergast/f1/circuits/"
+
+    except Exception as e:
+        print(f"Error: {e}")
+
 def circuits_data(year, round):
     ergast = Ergast(result_type='pandas', auto_cast=True)
-    circuits = ergast.get_circuits(season=year, round=round, limit=30)
+
+    try:
+        circuits = ergast.get_circuits(season=year, round=round, limit=30)
+    except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError, ErgastInvalidRequestError, ErgastJsonError, ErgastError) as e:
+        print(f"Error: {e}")
+        
+
+
     data = []
     
     for index, row in circuits.iterrows():
